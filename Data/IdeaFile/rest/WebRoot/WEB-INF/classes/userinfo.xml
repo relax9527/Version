@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="User">
+    <typeAlias alias="User" type="com.xushouwei.bean.User" /><!--起别名 -->
+    <!-- 查找所有未删除用户 -->
+    <select id="selectUsers" resultClass="User">
+        select
+        id,
+        username,
+        password
+        from
+        user
+        where
+        0=0;
+    </select>
+    <!-- 根据用户名找到用户 ## 防止sql注入 -->
+    <select id="findUserByName" resultClass="User" parameterClass="string">
+        select
+        id,
+        username,
+        password
+        from
+        user
+        where
+        username=#name#;
+    </select>
+    <select id="findUserById" resultClass="User" parameterClass="int">
+        select
+        id,
+        username,
+        password
+        from
+        user
+        where
+        id=#id#;
+    </select>
+    <!-- 根据id修改用户 -->
+    <update id="updateUser" parameterClass="User">
+        update
+        user
+        set
+        username=#username#,
+        password=#password#
+        where
+        id=#id#
+    </update>
+    <insert id="insertUser" parameterClass="User">
+
+        insert into user(username,password) values(#username#,#password#)
+
+    </insert>
+    <delete id="deleteUser" parameterClass="int">
+        DELETE   FROM user WHERE id=#id#;
+    </delete>
+    <select id="selectAllUser" resultClass="User" parameterClass="com.xushouwei.bean.Page">
+        select * from user limit #start#,#size#;
+    </select>
+    <select id="userLogin" parameterClass="User" resultClass="User">
+        select * from user WHERE  username=#username# and password=#password#;
+    </select>
+    <select id="selectUserByName" resultClass="User" parameterClass="string">
+        select * from user where username = #name#;
+    </select>
+    <select id="select" resultClass="int" parameterClass="string">
+        select COUNT(*) from user
+            <isNotEmpty prepend="where" property="value" >
+
+            username=#name#
+
+         </isNotEmpty>
+
+    </select>
+    <select id="selectList" resultClass="User" parameterClass="java.util.Map">
+        select * from user WHERE  username LIKE #name#  limit #start#,#size#;
+    </select>
+</sqlMap>
